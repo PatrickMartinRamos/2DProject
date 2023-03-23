@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class PlayerMovements : MonoBehaviour
 {
     public float speed = 15f;
@@ -12,6 +11,9 @@ public class PlayerMovements : MonoBehaviour
     private int jumpsremaining = 0;
     private bool isFacingRight = true;
     public Animator animator;
+    bool crouch = false;
+
+    // Add new variable to control collider visibility
 
     // Start is called before the first frame update
     void Start()
@@ -26,27 +28,47 @@ public class PlayerMovements : MonoBehaviour
     {
         //player movement Horizontal
         float horizontal = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
-        // ADD ANIMATION HERE SCRIPT >>
+        if (crouch == true)
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+        else 
+        {
+            rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+        }
         animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
-        if(Input.GetKeyDown(KeyCode.Space) && jumpsremaining > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && jumpsremaining > 0)
         {
             animator.SetBool("Jump", true);
-            // ADD ANIMATION HERE SCRIPT >>
             rb.velocity = new Vector2(rb.velocity.x, jumpforce);
             jumpsremaining--;
         }
 
-        if(horizontal > 0 && !isFacingRight)
+        // Toggle collider visibility when button is pressed/released
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            crouch = true;
+            animator.SetBool("isCrouching", true);
+            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            crouch = false;
+            animator.SetBool("isCrouching", false);
+            gameObject.GetComponent<CircleCollider2D>().enabled = true;
+        }
+
+        if (horizontal > 0 && !isFacingRight)
         {
             flip();
         }
-        else if(horizontal < 0 && isFacingRight)
+        else if (horizontal < 0 && isFacingRight)
         {
             flip();
         }
     }
+
     void flip()
     {
         isFacingRight = !isFacingRight;
@@ -55,9 +77,7 @@ public class PlayerMovements : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D other)
     {
-
-        
-        if(other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground"))
         {
             animator.SetBool("Jump", false);
             jumpsremaining = maxjumps;

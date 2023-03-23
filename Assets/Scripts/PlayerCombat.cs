@@ -5,10 +5,14 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour
 {
     public Animator animator;
-    // Update is called once per frame
+    private void Start()
+    {
+
+    }
+
     void Update()
     {
-        if(Input.GetKeyDown("j"))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             Attack();
         }
@@ -17,5 +21,5 @@ public class PlayerCombat : MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Attack");
-    }    
+    }
 }
