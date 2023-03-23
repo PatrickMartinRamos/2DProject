@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class EnemyBeheavior : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int health = 100;
+    int currentHealth;
+    public Animator animator;
+    public float delayTime = 1.0f;
+
+    private void Start()
     {
+        currentHealth = health;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+
+        if(currentHealth <= 0)
+        {
+            Die();
+        }
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void Die()
     {
-        
+        animator.SetBool("isDead", true);
+        Destroy(gameObject, delayTime);
     }
 }
