@@ -38,7 +38,7 @@ public class PlayerMovements : MonoBehaviour
         }
         animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
-        if (Input.GetKeyDown(KeyCode.Space) && jumpsremaining > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && jumpsremaining > 0 && !crouch)
         {
             animator.SetBool("Jump", true);
             rb.velocity = new Vector2(rb.velocity.x, jumpforce);
